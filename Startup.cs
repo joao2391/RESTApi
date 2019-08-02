@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using System.Reflection;
+using System.IO;
 
 namespace ApiREST
 {
@@ -57,6 +60,19 @@ namespace ApiREST
                     .RequireAuthenticatedUser().Build());
             });
 
+            services.AddSwaggerGen(c =>
+                    {
+                        
+                        c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "APIRest", Version = "v1"});
+
+                        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                        c.IncludeXmlComments(xmlPath);
+                        
+
+                    });
+
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -75,7 +91,16 @@ namespace ApiREST
                 app.UseHsts();
             }
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIRest");
+            });
+
+
             app.UseHttpsRedirection();
+            
             app.UseMvc();
         }
     }

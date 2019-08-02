@@ -27,8 +27,8 @@ namespace ApiREST.Controllers
         /// <param name="tokenConfigurations"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        public object Post([FromBody]object obj,
+        [HttpPost("gerartoken")]
+        public object GerarToken([FromBody]object obj,
                            [FromServices]SignInConfigurations signingConfigurations,
                            [FromServices]TokenConfigurations tokenConfigurations)
         {         
